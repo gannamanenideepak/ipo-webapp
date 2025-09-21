@@ -18,9 +18,10 @@ class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     permission_classes = [IsAdminOrReadOnly]
+     # ✅ Added filters so frontend search & sort works
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'sector']
-    ordering_fields = ['name']
+    search_fields = ['name', 'sector']  # frontend search box works with ?search=
+    ordering_fields = ['name', 'created_at']  # can sort by name or created date
 
 # --------------------------
 # IPO ViewSet
@@ -32,7 +33,7 @@ class IPOViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'company__id']
     search_fields = ['company__name', 'price_band', 'issue_type']
-    ordering_fields = ['open_date', 'ipo_price']
+    ordering_fields = ['open_date', 'ipo_price', 'created_at']
 
     parser_classes = [MultiPartParser, FormParser]
 

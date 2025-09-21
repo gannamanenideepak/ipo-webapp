@@ -6,7 +6,11 @@ class CompanySerializer(serializers.ModelSerializer):
         model = Company
         fields = ['id', 'name', 'sector', 'description', 'website', 'logo', 'created_at']
         read_only_fields = ['id', 'created_at']
-
+    def get_logo_url(self, obj):
+        request = self.context.get('request')
+        if obj.logo and hasattr(obj.logo, 'url'):
+            return request.build_absolute_uri(obj.logo.url)
+        return None
 
 class IPOSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
@@ -16,6 +20,8 @@ class IPOSerializer(serializers.ModelSerializer):
 
     listing_gain = serializers.SerializerMethodField()
     current_return = serializers.SerializerMethodField()
+    rhp_pdf_url = serializers.SerializerMethodField()
+    drhp_pdf_url = serializers.SerializerMethodField()
 
     class Meta:
         model = IPO
@@ -33,3 +39,14 @@ class IPOSerializer(serializers.ModelSerializer):
 
     def get_current_return(self, obj):
         return obj.current_return
+    def get_rhp_pdf_url(self, obj):
+        request = self.context.get('request')
+        if obj.rhp_pdf and hasattr(obj.rhp_pdf, 'url'):
+            return request.build_absolute_uri(obj.rhp_pdf.url)
+        return None
+
+    def get_drhp_pdf_url(self, obj):
+        request = self.context.get('request')
+        if obj.drhp_pdf and hasattr(obj.drhp_pdf, 'url'):
+            return request.build_absolute_uri(obj.drhp_pdf.url)
+        return None
